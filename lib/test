@@ -1,0 +1,74 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:html';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart'as http;
+
+import 'homescreen.dart';
+
+
+
+class Test extends StatefulWidget {
+  Test ({Key? key}) : super(key: key);
+
+  @override
+ _TestState createState()=> _TestState();
+
+}
+class _TestState  extends State<Test>{
+
+  List posts =[];
+  Future get_post() async {
+
+    final url = Uri.parse('https://jsonplaceholder.typicode.com/users');
+
+   var response = await http.get(url);
+   var responseBody =jsonDecode(response.body);
+   posts.addAll(responseBody);
+   print (posts[5]);
+
+ }
+
+
+  @override
+  void initState(){
+
+    get_post();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('haya', style: TextStyle(fontSize: 20)),
+      ),
+      body:
+          posts == null || posts.isEmpty?
+               const Center(child: CircularProgressIndicator())
+
+          :ListView.builder(
+          itemCount: posts.length,
+          itemBuilder:(context ,i ){
+           return Container(
+             margin: const EdgeInsets.only(top: 10,bottom: 10),
+               color: Colors.purple.shade50,
+               child: Text("${posts[i]['name']}"));
+
+          }
+          ),
+
+
+
+  );
+
+
+
+  }
+
+
+
+
+}
